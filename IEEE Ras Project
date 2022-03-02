@@ -1,0 +1,54 @@
+# Python program to find current
+# weather details of any city
+# using openweathermap api
+
+from bs4 import BeautifulSoup
+import requests
+import smtplib
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+
+
+def weather(city):
+    city = city.replace(" ", "+")
+    res = requests.get(
+        f'https://www.google.com/search?q={city}&oq={city}&aqs=chrome.0.35i39l2j0l4j46j69i60.6128j1j7&sourceid=chrome&ie=UTF-8',
+        headers=headers)
+    print("Searching...\n")
+    soup = BeautifulSoup(res.text, 'html.parser')
+    location = soup.select('#wob_loc')[0].getText().strip()
+    time = soup.select('#wob_dts')[0].getText().strip()
+    weather = soup.select('#wob_dc')[0].getText().strip()
+    temperature = soup.select('#wob_tm')[0].getText().strip()
+
+    subject = "Weather update"
+    body = f"Weather condition for today is {weather} °C and temperature is {temperature} in {cityname}. \n Have a Nice Day:)"
+    msg = f"Subject:{subject}\n\n{body}\n\nRegards,\nWeather Update Team".encode('utf-8')
+    print(location)
+    print(time)
+    print(weather)
+    print(temperature + "°C")
+
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+
+    print(server.ehlo())
+
+    print(server.starttls())
+
+
+    server.login('', '')
+
+
+    server.sendmail('', '', msg)
+
+    print("Email Sent successfully.:)")
+
+    server.quit()
+
+city = input("Enter the Name of City ->  ")
+cityname = city
+city = city + " weather"
+weather(city)
+print("Have a Nice Day:)")
